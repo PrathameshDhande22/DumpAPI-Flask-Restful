@@ -13,8 +13,12 @@ api = Api(dept)
 resource_fields = {"id": fields.Integer, "name": fields.String, "head": fields.String}
 
 dept_args = RequestParser()
-dept_args.add_argument("name", help="Name is required is To register the Department", type=str)
-dept_args.add_argument("head", help="Head is required is To register the Department", type=str)
+dept_args.add_argument(
+    "name", help="Name is required is To register the Department", type=str, required=True
+)
+dept_args.add_argument(
+    "head", help="Head is required is To register the Department", type=str, required=True
+)
 
 
 class Dept(Resource):
