@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask_restful import Api, Resource, abort, fields, marshal_with
 from flask_restful.reqparse import RequestParser
 from sqlalchemy import Delete, Select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from DumpAPI.Auth.token import token_required
 from DumpAPI.database import Department, db
 from DumpAPI.utils import checkisNone
@@ -59,6 +59,11 @@ class Dept(Resource):
                     return {"message": f"Department ID={id} Added Successfully."}, 201
             except IntegrityError as e:
                 abort(409, message=f"Department id={id} already present")
+            except NoResultFound as nota:
+                deptobj = Department(id=id, name=args.get("name"), head=args.get("head"))
+                db.session.add(deptobj)
+                db.session.commit()
+                return {"message": f"Department ID={id} Added Successfully."}, 201
 
     @token_required
     def delete(self, id):
